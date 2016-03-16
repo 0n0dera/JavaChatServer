@@ -7,6 +7,7 @@ public class Server implements Runnable{
 	private int clientCount = 0;
 	private ServerSocket serverSocket;
 	private int id = 0;
+	private final String helpText = "\n\n*******************************************************************\n\n- Type .quit to leave.\n- Type .people to see a list of people currently in the server.\n- Type .roll to roll the dice.\n- Type .help to see this help menu\n\n*******************************************************************\n\n";
 	
 	public Server(int port)
 	{
@@ -36,20 +37,8 @@ public class Server implements Runnable{
 			{
 				System.out.println(e.getMessage());
 			}
-		}
-		
+		}	
 	}
-	
-    public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
-            System.err.println("Usage: java Server <port number>");
-            System.exit(1);
-        }
- 
-        int portNumber = Integer.parseInt(args[0]);
-		System.out.println("Java server started on port " + portNumber);
-		Server server  = new Server(portNumber);
-    }
 	
 	public void clientJoinMessage(String name)
 	{
@@ -87,13 +76,39 @@ public class Server implements Runnable{
 		{
 			c.send(peopleList());
 		}
+		else if (message.equals(".help"))
+		{
+			c.send(helpText);
+		}
 		else
 		{
 			for (int i=0;i<clientCount;i++)
 			{
 				clients[i].send(c.getname()+": "+ message);
 			}
-		}		
+		}
+		
+		if (message.equals(".roll"))
+		{
+			int roll = (int)(Math.random()*100)+1;
+			String msg="";
+			if (roll < 10)
+			{
+				msg = " Damn, not that good...";
+			}
+			else if (roll == 100)
+			{
+				msg = " PERFECT!!!";
+			}
+			else if (roll > 90)
+			{
+				msg = " Impressive!";
+			}
+			for (int i=0;i<clientCount;i++)
+			{
+				clients[i].send(c.getname()+" rolled a " + roll+"."+msg);
+			}
+		}
 	}
 	
 	
@@ -126,6 +141,7 @@ public class Server implements Runnable{
 		System.out.println("There are "+clientCount+" clients.");
 		clientLeaveMessage(name);
 	}
+	
 	public synchronized void addThread(ChatServerThread c)
 	{
 		clients[clientCount++] = c;
@@ -133,4 +149,15 @@ public class Server implements Runnable{
 		System.out.println("There are "+clientCount+" clients.");
 		clientJoinMessage(c.getname());
 	}
+	
+	 public static void main(String[] args) throws IOException {
+        if (args.length != 1) {
+            System.err.println("Usage: java Server <port number>");
+            System.exit(1);
+        }
+ 
+        int portNumber = Integer.parseInt(args[0]);
+		System.out.println("Java server started on port " + portNumber);
+		Server server  = new Server(portNumber);
+    }
 }

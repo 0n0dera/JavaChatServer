@@ -9,6 +9,7 @@ public class ChatServerThread extends Thread{
 	private Server server;
 	private int id;
 	private boolean done = false;
+	private String clear = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 	
 	public ChatServerThread(Server server, Socket socket, int id)
 	{
@@ -21,9 +22,12 @@ public class ChatServerThread extends Thread{
 	
 	private void promptName() throws IOException
 	{
+		out.println(clear);
 		out.println("Enter your name:");
 		name = in.readLine();
-		out.println("\nHi "+name+", welcome to the server!\n\n- Type .quit to leave.\n- Type .people to see a list of people currently in the server.\n");
+		out.println(clear);
+		out.println("\nHi "+name+", welcome to the server!");
+		server.receiveMessage(this,".help");
 		server.addThread(this);
 	}
 	

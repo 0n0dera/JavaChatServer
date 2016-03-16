@@ -8,6 +8,7 @@ public class Client implements Runnable{
 	private Thread t = null;
 	private boolean done = false;
 	PrintWriter out = null;
+	private String clear = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 	
 	
 	public Client(String host, int port)
@@ -50,9 +51,13 @@ public class Client implements Runnable{
 					done = true;
 				}
 			}
-			System.out.println("Bye");
-			stdin.readLine();
-			System.exit(1);
+			System.out.print(clear);
+			System.out.println("Bye, press Enter to exit...");
+			try{
+				System.in.read();
+				System.exit(0);
+			}
+			catch (IOException io){};
 	}
 	
     public static void main(String[] args) throws IOException {

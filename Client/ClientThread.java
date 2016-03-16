@@ -3,7 +3,8 @@ import java.io.*;
  
 public class ClientThread extends Thread{
 	BufferedReader in = null; 
-	
+	private String clear = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+
 	public ClientThread(Socket serverSocket)
 	{
 		try{
@@ -32,7 +33,12 @@ public class ClientThread extends Thread{
 					break;
 				}
 			}
-			System.out.println("Server has gone down, bye");
-			System.exit(0);
+			System.out.print(clear);
+			System.out.println("Server has gone down, bye. Press Enter to exit...");
+			try{
+				System.in.read();
+				System.exit(0);
+			}
+			catch (IOException io){};
 	}
 }
